@@ -6,22 +6,22 @@ import { fileURLToPath } from "url";
 
 dotenv.config();
 const app = express();
-app.use(express.json({ limit:"1mb" }));
+app.use(express.json({ limit: "1mb" }));
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Statische Dateien
+// Statische HTML/JS/CSS
 app.use(express.static(path.join(__dirname, "public")));
 
 // HTML-Routen
-app.get("/", (req,res)=>res.sendFile(path.join(__dirname,"public","marktplatz.html")));
-app.get("/mission", (req,res)=>res.sendFile(path.join(__dirname,"public","mission.html")));
+app.get("/", (req,res) => res.sendFile(path.join(__dirname,"public","marktplatz.html")));
+app.get("/mission", (req,res) => res.sendFile(path.join(__dirname,"public","mission.html")));
 
 // POST Mission
 app.post("/send-mission", async (req,res)=>{
   if(!process.env.DISCORD_WEBHOOK_MISSION) return res.status(500).json({error:"Mission Webhook nicht gesetzt"});
-  if(!req.body || !req.body.embeds) return res.status(400).json({error:"Body fehlt"});
+  if(!req.body?.embeds) return res.status(400).json({error:"Body fehlt oder embeds"});
   try{
     const response = await fetch(process.env.DISCORD_WEBHOOK_MISSION, {
       method:"POST",
@@ -37,7 +37,7 @@ app.post("/send-mission", async (req,res)=>{
 // POST Marktplatz
 app.post("/send-market", async (req,res)=>{
   if(!process.env.DISCORD_WEBHOOK_MARKET) return res.status(500).json({error:"Market Webhook nicht gesetzt"});
-  if(!req.body || !req.body.embeds) return res.status(400).json({error:"Body fehlt"});
+  if(!req.body?.embeds) return res.status(400).json({error:"Body fehlt oder embeds"});
   try{
     const response = await fetch(process.env.DISCORD_WEBHOOK_MARKET, {
       method:"POST",
@@ -52,3 +52,4 @@ app.post("/send-market", async (req,res)=>{
 
 const PORT = process.env.PORT||3000;
 app.listen(PORT,()=>console.log(`Server läuft auf Port ${PORT}`));
+
