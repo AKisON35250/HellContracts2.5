@@ -9,16 +9,14 @@ dotenv.config();
 const app = express();
 app.use(express.json({ limit: "1mb" }));
 
-// __dirname Fix für ES Module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Static Files (deine HTML Dateien im public Ordner)
 app.use(express.static(path.join(__dirname, "public")));
 
 
 // ===============================
-// Mission Endpoint
+// MISSION
 // ===============================
 app.post("/send-mission", async (req, res) => {
 
@@ -26,27 +24,36 @@ app.post("/send-mission", async (req, res) => {
         return res.status(500).json({ error: "Mission Webhook nicht gesetzt" });
     }
 
+    if (!req.body || !req.body.embeds) {
+        return res.status(400).json({ error: "Body oder Embeds fehlen" });
+    }
+
     try {
+
         const response = await fetch(process.env.DISCORD_WEBHOOK_MISSION, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(req.body)
         });
 
+        const text = await response.text();
+
         if (!response.ok) {
-            return res.status(500).json({ error: "Discord Fehler (Mission)" });
+            console.log("Discord Mission Fehler:", text);
+            return res.status(400).json({ error: text });
         }
 
         res.json({ success: true });
 
     } catch (err) {
-        res.status(500).json({ error: "Server Fehler (Mission)" });
+        console.log("Server Mission Fehler:", err);
+        res.status(500).json({ error: "Server Fehler" });
     }
 });
 
 
 // ===============================
-// Marktplatz Endpoint
+// MARKTPLATZ
 // ===============================
 app.post("/send-market", async (req, res) => {
 
@@ -54,28 +61,36 @@ app.post("/send-market", async (req, res) => {
         return res.status(500).json({ error: "Market Webhook nicht gesetzt" });
     }
 
+    if (!req.body || !req.body.embeds) {
+        return res.status(400).json({ error: "Body oder Embeds fehlen" });
+    }
+
     try {
+
         const response = await fetch(process.env.DISCORD_WEBHOOK_MARKET, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(req.body)
         });
 
+        const text = await response.text();
+
         if (!response.ok) {
-            return res.status(500).json({ error: "Discord Fehler (Market)" });
+            console.log("Discord Market Fehler:", text);
+            return res.status(400).json({ error: text });
         }
 
         res.json({ success: true });
 
     } catch (err) {
-        res.status(500).json({ error: "Server Fehler (Market)" });
+        console.log("Server Market Fehler:", err);
+        res.status(500).json({ error: "Server Fehler" });
     }
 });
 
 
-// ===============================
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
     console.log("Server läuft auf Port", PORT);
 });
+
