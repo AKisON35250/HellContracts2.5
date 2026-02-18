@@ -5,259 +5,117 @@
 <title>Final Hell | Marktplatz Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body {
-    background: radial-gradient(circle at top, #1b1b1b, #050505);
-    color: #e5e5e5;
-    font-family: 'Orbitron', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px;
-}
-
-.container {
-    background: rgba(20,20,20,0.95);
-    padding: 40px;
-    border-radius: 16px;
-    width: 500px;
-    text-align: center;
-    box-shadow: 0 0 25px rgba(255,0,0,0.5);
-}
-
-h1 {
-    color: #c10000;
-    margin: 20px 0;
-}
-
-.logo {
-    width: 120px;
-    height: 120px;
-    margin-bottom: 20px;
-    object-fit: contain;
-}
-
-label {
-    display: block;
-    text-align: left;
-    margin-top: 10px;
-    font-weight: bold;
-    color: #ff4c4c;
-}
-
-input, textarea, select, button {
-    width: 100%;
-    margin: 5px 0 15px 0;
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 14px;
-    background: #222;
-    color: white;
-}
-
-textarea { resize: none; height: 100px; }
-
-button {
-    background: #c10000;
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.3s;
-}
-
-button:hover {
-    background: #ff1a1a;
-    transform: scale(1.03);
-}
-
-.info-field { display:none; }
-
-input[type="file"] {
-    padding: 3px;
-    cursor: pointer;
-}
-
-/* Meldungsfelder */
-#marketMessage {
-    font-weight: bold;
-    margin-top: 10px;
-}
-#marketConfirm {
-    font-weight: bold;
-    margin-top: 10px;
-    color:#ffcc00;
-}
+body {background:radial-gradient(circle at top,#1b1b1b,#050505);color:#e5e5e5;font-family:'Orbitron',sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
+.container {background:rgba(20,20,20,0.95);padding:40px;border-radius:16px;width:500px;text-align:center;box-shadow:0 0 25px rgba(255,0,0,0.5)}
+h1 {color:#c10000;margin:20px 0}
+.logo {width:120px;height:120px;margin-bottom:20px;object-fit:contain}
+label {display:block;text-align:left;margin-top:10px;font-weight:bold;color:#ff4c4c}
+input,textarea,select,button {width:100%;margin:5px 0 15px 0;padding:10px;border-radius:8px;border:none;font-family:'Orbitron',sans-serif;font-size:14px;background:#222;color:white}
+textarea {resize:none;height:100px}
+button {background:#c10000;color:white;cursor:pointer;font-weight:bold;transition:.3s}
+button:hover {background:#ff1a1a;transform:scale(1.03)}
+.info-field {display:none}
+#marketMessage,#marketConfirm {font-weight:bold;margin-top:10px}
+#marketConfirm {color:#ffcc00}
 </style>
 </head>
 <body>
-
 <div class="container">
-    <img src="logo.png" alt="Final Hell Logo" class="logo">
-    <h1>Marktplatz Anzeige</h1>
+<img src="logo.png" class="logo">
+<h1>Marktplatz Anzeige</h1>
 
-    <label for="marketCategory">Kategorie</label>
-    <select id="marketCategory" onchange="updateFields()">
-      <option value="Ich suche">Ich suche</option>
-      <option value="Ich biete">Ich biete</option>
-      <option value="Auftrag">Auftrag</option>
-      <option value="Hilfe">Hilfe</option>
-      <option value="Verkauf">Verkauf</option>
-      <option value="Ankauf">Ankauf</option>
-    </select>
+<label for="marketCategory">Kategorie</label>
+<select id="marketCategory" onchange="updateFields()">
+  <option value="Ich suche">Ich suche</option>
+  <option value="Ich biete">Ich biete</option>
+  <option value="Auftrag">Auftrag</option>
+  <option value="Hilfe">Hilfe</option>
+  <option value="Verkauf">Verkauf</option>
+  <option value="Ankauf">Ankauf</option>
+</select>
 
-    <label for="marketTitle">Titel der Anzeige</label>
-    <input type="text" id="marketTitle" placeholder="Titel">
+<label for="marketTitle">Titel der Anzeige</label>
+<input type="text" id="marketTitle" placeholder="Titel">
+<label for="marketIC">IC Name (optional)</label>
+<input type="text" id="marketIC" placeholder="IC Name">
+<label for="marketDesc">Beschreibung</label>
+<textarea id="marketDesc" placeholder="Detaillierte Beschreibung"></textarea>
 
-    <label for="marketIC">IC Name (optional)</label>
-    <input type="text" id="marketIC" placeholder="IC Name">
+<div id="verkaufFields" class="info-field">
+<label for="priceField">Preis</label><input type="text" id="priceField" placeholder="Preis">
+<label for="conditionField">Zustand</label><input type="text" id="conditionField" placeholder="Neu/Gebraucht/Defekt">
+<label for="amountField">Menge</label><input type="number" id="amountField" placeholder="Anzahl">
+</div>
 
-    <label for="marketDesc">Beschreibung</label>
-    <textarea id="marketDesc" placeholder="Detaillierte Beschreibung"></textarea>
+<div id="auftragFields" class="info-field">
+<label for="auftragField">Auftragsdetails</label><textarea id="auftragField" placeholder="Detaillierte Auftragsinformationen"></textarea>
+</div>
 
-    <div id="verkaufFields" class="info-field">
-        <label for="priceField">Preis</label>
-        <input type="text" id="priceField" placeholder="Preis in €">
-        <label for="conditionField">Zustand</label>
-        <input type="text" id="conditionField" placeholder="Neu / Gebraucht / Defekt">
-        <label for="amountField">Menge</label>
-        <input type="number" id="amountField" placeholder="Anzahl">
-    </div>
+<div id="hilfeFields" class="info-field">
+<label for="hilfeField">Hilfebedarf</label><textarea id="hilfeField" placeholder="Was wird benötigt?"></textarea>
+</div>
 
-    <div id="auftragFields" class="info-field">
-        <label for="auftragField">Auftragsdetails</label>
-        <textarea id="auftragField" placeholder="Detaillierte Auftragsinformationen"></textarea>
-    </div>
+<label for="imageField">Foto (optional, URL)</label>
+<input type="text" id="imageField" placeholder="Bild-URL eingeben">
+<button onclick="confirmSend()">Anzeige senden</button>
 
-    <div id="hilfeFields" class="info-field">
-        <label for="hilfeField">Hilfebedarf</label>
-        <textarea id="hilfeField" placeholder="Was genau wird benötigt?"></textarea>
-    </div>
-
-    <label for="imageField">Foto (optional, URL)</label>
-    <input type="text" id="imageField" placeholder="Bild-URL eingeben">
-
-    <button onclick="confirmSend()">Anzeige senden</button>
-
-    <!-- Bestätigung und Meldungen -->
-    <div id="marketConfirm"></div>
-    <div id="marketMessage"></div>
+<div id="marketConfirm"></div>
+<div id="marketMessage"></div>
 </div>
 
 <script>
-// Discord Webhook
-const DISCORD_WEBHOOK_MARKET = "https://discord.com/api/webhooks/1473723070010232864/u06kcauWE-_vPwpo-TfGrn5sCRvQus4IEJxiPPlZgD_3ODu_3qjiNe7sUVwIPd3CFvnT";
+const DISCORD_WEBHOOK_MARKET="/send-market";
+const logoURL="https://DEIN_RENDER_URL/logo.png";
+const categoryColors={"Ich suche":0x3498db,"Ich biete":0x2ecc71,"Auftrag":0xf1c40f,"Hilfe":0xe67e22,"Verkauf":0xe74c3c,"Ankauf":0x9b59b6};
+const categoryImages={"Ich suche":"https://DEIN_RENDER_URL/Screenshot2026-02-18184928.png","Ich biete":"https://DEIN_RENDER_URL/Screenshot2026-02-18184008.png","Auftrag":"https://DEIN_RENDER_URL/Screenshot2026-02-18184018.png","Hilfe":"https://DEIN_RENDER_URL/Screenshot2026-02-18184026.png","Verkauf":"https://DEIN_RENDER_URL/Screenshot2026-02-18184035.png","Ankauf":"https://DEIN_RENDER_URL/Screenshot2026-02-18184047.png"};
 
-// Kategorie-Farben
-const categoryColors = {
-  "Ich suche": 0x3498db,
-  "Ich biete": 0x2ecc71,
-  "Auftrag": 0xf1c40f,
-  "Hilfe": 0xe67e22,
-  "Verkauf": 0xe74c3c,
-  "Ankauf": 0x9b59b6
-};
-
-// Kategorie-Bilder
-const categoryImages = {
-  "Ich suche": "https://r2.fivemanage.com/zqqyIRBSKT1NGIGw2ZvPd/Screenshot2026-02-18184928.png",
-  "Ich biete": "https://r2.fivemanage.com/zqqyIRBSKT1NGIGw2ZvPd/Screenshot2026-02-18184008.png",
-  "Auftrag": "https://r2.fivemanage.com/zqqyIRBSKT1NGIGw2ZvPd/Screenshot2026-02-18184018.png",
-  "Hilfe": "https://r2.fivemanage.com/zqqyIRBSKT1NGIGw2ZvPd/Screenshot2026-02-18184026.png",
-  "Verkauf": "https://r2.fivemanage.com/zqqyIRBSKT1NGIGw2ZvPd/Screenshot2026-02-18184035.png",
-  "Ankauf": "https://r2.fivemanage.com/zqqyIRBSKT1NGIGw2ZvPd/Screenshot2026-02-18184047.png"
-};
-
-// Logo für Footer im Embed
-const logoURL = "logo.png";
-
-// Kategorie-spezifische Felder anzeigen
-function updateFields() {
-  const category = document.getElementById("marketCategory").value;
-  document.getElementById("verkaufFields").style.display = category==="Verkauf" ? "block" : "none";
-  document.getElementById("auftragFields").style.display = category==="Auftrag" ? "block" : "none";
-  document.getElementById("hilfeFields").style.display = category==="Hilfe" ? "block" : "none";
+function updateFields(){
+const category=document.getElementById("marketCategory").value;
+document.getElementById("verkaufFields").style.display=category==="Verkauf"?"block":"none";
+document.getElementById("auftragFields").style.display=category==="Auftrag"?"block":"none";
+document.getElementById("hilfeFields").style.display=category==="Hilfe"?"block":"none";
 }
 
-// Bestätigung vor Absenden
-function confirmSend() {
-    const confirmDiv = document.getElementById("marketConfirm");
-    confirmDiv.innerHTML = `
-        ⚠️ Bist du sicher, dass du die Anzeige senden willst?<br>
-        <button onclick="sendMarket()">Ja, senden</button>
-        <button onclick="cancelSend()">Abbrechen</button>
-    `;
+function confirmSend(){
+document.getElementById("marketConfirm").innerHTML=`
+⚠️ Bist du sicher, dass du die Anzeige senden willst?<br>
+<button onclick="sendMarket()">Ja, senden</button>
+<button onclick="cancelSend()">Abbrechen</button>`;
 }
 
-function cancelSend() {
-    const confirmDiv = document.getElementById("marketConfirm");
-    confirmDiv.innerText = "❌ Versand abgebrochen";
-}
+function cancelSend(){document.getElementById("marketConfirm").innerText="❌ Versand abgebrochen";}
 
-// Anzeige senden
-async function sendMarket() {
-    const msgDiv = document.getElementById("marketMessage");
-    const confirmDiv = document.getElementById("marketConfirm");
-    msgDiv.style.color = "#00ff7f"; 
-    const title = document.getElementById("marketTitle").value;
-    const desc = document.getElementById("marketDesc").value;
-    const category = document.getElementById("marketCategory").value;
-    const ic = document.getElementById("marketIC").value || "Anonym";
-    const imageURL = document.getElementById("imageField").value || categoryImages[category];
-
-    if(!title || !desc){
-        msgDiv.style.color = "#ff4c4c";
-        msgDiv.innerText = "Bitte Titel und Beschreibung ausfüllen!";
-        confirmDiv.innerHTML = "";
-        return;
-    }
-
-    let extra = "";
-    if(category==="Verkauf") {
-        extra = `💰 Preis: ${document.getElementById("priceField").value || "Nicht angegeben"}\n`+
-                `🛠 Zustand: ${document.getElementById("conditionField").value || "Nicht angegeben"}\n`+
-                `📦 Menge: ${document.getElementById("amountField").value || "1"}`;
-    }
-    if(category==="Auftrag") extra = `📋 Auftragsdetails:\n${document.getElementById("auftragField").value || "Keine Details"}`;
-    if(category==="Hilfe") extra = `🆘 Hilfebedarf:\n${document.getElementById("hilfeField").value || "Keine Details"}`;
-
-    const embed = {
-        embeds:[{
-            title:title,
-            description: `${desc}\n\n${extra}`,
-            color: categoryColors[category],
-            footer:{text:`Kategorie: ${category} | Von: ${ic}`, icon_url: logoURL},
-            thumbnail:{url:imageURL}
-        }]
-    };
-
-    try {
-        await fetch(DISCORD_WEBHOOK_MARKET,{
-            method:"POST",
-            headers:{ "Content-Type":"application/json" },
-            body: JSON.stringify(embed)
-        });
-        msgDiv.style.color="#00ff7f";
-        msgDiv.innerText="✅ Marktplatz-Anzeige erfolgreich gesendet!";
-    } catch(err){
-        msgDiv.style.color="#ff4c4c";
-        msgDiv.innerText="❌ Fehler beim Senden der Anzeige!";
-    }
-
-    // Formular zurücksetzen
-    document.getElementById("marketTitle").value="";
-    document.getElementById("marketDesc").value="";
-    document.getElementById("marketIC").value="";
-    document.getElementById("priceField").value="";
-    document.getElementById("conditionField").value="";
-    document.getElementById("amountField").value="";
-    document.getElementById("auftragField").value="";
-    document.getElementById("hilfeField").value="";
-    document.getElementById("imageField").value="";
-    confirmDiv.innerHTML = "";
+async function sendMarket(){
+const msgDiv=document.getElementById("marketMessage");
+const confirmDiv=document.getElementById("marketConfirm");
+const title=document.getElementById("marketTitle").value;
+const desc=document.getElementById("marketDesc").value;
+const category=document.getElementById("marketCategory").value;
+const ic=document.getElementById("marketIC").value||"Anonym";
+const imageURL=document.getElementById("imageField").value||categoryImages[category];
+if(!title||!desc){msgDiv.style.color="#ff4c4c";msgDiv.innerText="Bitte Titel und Beschreibung ausfüllen!";confirmDiv.innerHTML="";return}
+let extra="";
+if(category==="Verkauf") extra=`💰 Preis: ${document.getElementById("priceField").value||"Nicht angegeben"}\n🛠 Zustand: ${document.getElementById("conditionField").value||"Nicht angegeben"}\n📦 Menge: ${document.getElementById("amountField").value||"1"}`;
+if(category==="Auftrag") extra=`📋 Auftragsdetails:\n${document.getElementById("auftragField").value||"Keine Details"}`;
+if(category==="Hilfe") extra=`🆘 Hilfebedarf:\n${document.getElementById("hilfeField").value||"Keine Details"}`;
+const embed={embeds:[{title,description:`${desc}\n\n${extra}`,color:categoryColors[category],footer:{text:`Kategorie: ${category} | Von: ${ic}`,icon_url:logoURL},thumbnail:{url:imageURL}}]};
+try{
+const response=await fetch(DISCORD_WEBHOOK_MARKET,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(embed)});
+if(!response.ok)throw new Error("Discord Fehler");
+msgDiv.style.color="#00ff7f";msgDiv.innerText="✅ Marktplatz-Anzeige erfolgreich gesendet!";
+}catch(err){msgDiv.style.color="#ff4c4c";msgDiv.innerText="❌ Fehler beim Senden der Anzeige!";console.error(err)}
+document.getElementById("marketTitle").value="";
+document.getElementById("marketDesc").value="";
+document.getElementById("marketIC").value="";
+document.getElementById("priceField").value="";
+document.getElementById("conditionField").value="";
+document.getElementById("amountField").value="";
+document.getElementById("auftragField").value="";
+document.getElementById("hilfeField").value="";
+document.getElementById("imageField").value="";
+confirmDiv.innerHTML="";
 }
 </script>
-
 </body>
 </html>
+
