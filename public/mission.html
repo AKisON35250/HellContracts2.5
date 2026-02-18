@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Final Hell | Mission Admin</title>
+<style>
+body { background:#111; color:#fff; font-family:Arial,sans-serif; padding:20px; }
+input, textarea, button { display:block; margin:10px 0; padding:8px; width:300px; }
+button { background:#c10000; color:white; border:none; cursor:pointer; }
+button:hover { background:#ff1a1a; }
+h2 { margin-top:40px; }
+</style>
+</head>
+<body>
+
+<h1>Mission erstellen</h1>
+
+<input type="text" id="missionTitle" placeholder="Titel der Mission">
+<textarea id="missionDesc" placeholder="Beschreibung der Mission"></textarea>
+<button onclick="sendMission()">Mission senden</button>
+
+<script>
+// Dein Discord Webhook für Missionen
+const DISCORD_WEBHOOK_MISSION = "https://discord.com/api/webhooks/DEINE_MISSION_URL";
+
+// Mission senden
+async function sendMission() {
+  const title = document.getElementById("missionTitle").value;
+  const desc = document.getElementById("missionDesc").value;
+  if(!title || !desc){ alert("Bitte Titel und Beschreibung ausfüllen"); return; }
+
+  await fetch(DISCORD_WEBHOOK_MISSION, {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({
+      content: `📜 **Neue Mission**\n**${title}**\n\n${desc}\n\n➡️ Mission annehmen auf der Webseite`
+    })
+  });
+
+  alert("Mission wurde gesendet!");
+  document.getElementById("missionTitle").value = "";
+  document.getElementById("missionDesc").value = "";
+}
+</script>
+
+</body>
+</html>
