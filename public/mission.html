@@ -2,75 +2,72 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Final Hell | Missionen Admin</title>
+<title>Final Hell | Mission Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body {background: radial-gradient(circle at top,#1b1b1b,#050505);color:#e5e5e5;font-family:'Orbitron',sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
-.container {background:rgba(20,20,20,0.95);padding:40px;border-radius:16px;width:500px;text-align:center;box-shadow:0 0 25px rgba(255,0,0,0.5)}
-h1 {color:#c10000;margin:20px 0}
-.logo {width:120px;height:120px;margin-bottom:20px;object-fit:contain}
-label {display:block;text-align:left;margin-top:10px;font-weight:bold;color:#ff4c4c}
-input,textarea,select,button {width:100%;margin:5px 0 15px 0;padding:10px;border-radius:8px;border:none;font-family:'Orbitron',sans-serif;font-size:14px;background:#222;color:white}
-textarea {resize:none;height:100px}
-button {background:#c10000;color:white;cursor:pointer;font-weight:bold;transition:.3s}
-button:hover {background:#ff1a1a;transform:scale(1.03)}
-#missionMessage,#missionConfirm {font-weight:bold;margin-top:10px}
-#missionConfirm {color:#ffcc00}
+body { background: radial-gradient(circle at top,#1b1b1b,#050505); color:#e5e5e5; font-family:'Orbitron',sans-serif; display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
+.container { background: rgba(20,20,20,0.95); padding:40px; border-radius:16px; width:500px; text-align:center; box-shadow:0 0 25px rgba(255,0,0,0.5); }
+h1 { color:#c10000; margin:20px 0; }
+.logo { width:120px; height:120px; margin-bottom:20px; object-fit:contain; }
+label { display:block; text-align:left; margin-top:10px; font-weight:bold; color:#ff4c4c; }
+input,textarea,button { width:100%; margin:5px 0 15px 0; padding:10px; border-radius:8px; border:none; font-family:'Orbitron',sans-serif; font-size:14px; background:#222; color:white; }
+textarea { resize:none; height:100px; }
+button { background:#c10000; color:white; cursor:pointer; font-weight:bold; transition:.3s; }
+button:hover { background:#ff1a1a; transform:scale(1.03); }
+#missionMessage, #missionConfirm { font-weight:bold; margin-top:10px; }
+#missionConfirm { color:#ffcc00; }
 </style>
 </head>
 <body>
+
 <div class="container">
 <img src="logo.png" alt="Final Hell Logo" class="logo">
 <h1>Mission erstellen</h1>
 
 <label for="missionTitle">Titel der Mission</label>
 <input type="text" id="missionTitle" placeholder="Titel">
+
 <label for="missionIC">IC Name (optional)</label>
 <input type="text" id="missionIC" placeholder="IC Name">
+
 <label for="missionDesc">Beschreibung</label>
 <textarea id="missionDesc" placeholder="Detaillierte Beschreibung"></textarea>
+
 <label for="missionImage">Bild (optional, URL)</label>
 <input type="text" id="missionImage" placeholder="Bild-URL eingeben">
-<button onclick="confirmMission()">Mission senden</button>
 
+<button onclick="confirmMission()">Mission senden</button>
 <div id="missionConfirm"></div>
 <div id="missionMessage"></div>
 </div>
 
 <script>
-const DISCORD_WEBHOOK_MISSION = "/send-mission";
-const logoURL = "https://DEIN_RENDER_URL/logo.png";
+function confirmMission(){ document.getElementById("missionConfirm").innerHTML=`⚠️ Bist du sicher?<br><button onclick="sendMission()">Ja, senden</button><button onclick="cancelMission()">Abbrechen</button>`; }
+function cancelMission(){ document.getElementById("missionConfirm").innerText="❌ Versand abgebrochen"; }
 
-function confirmMission() {
-  document.getElementById("missionConfirm").innerHTML = `
-    ⚠️ Bist du sicher, dass du die Mission senden willst?<br>
-    <button onclick="sendMission()">Ja, senden</button>
-    <button onclick="cancelMission()">Abbrechen</button>`;
-}
+async function sendMission(){
+    const title=document.getElementById("missionTitle").value.trim();
+    const desc=document.getElementById("missionDesc").value.trim();
+    const ic=document.getElementById("missionIC").value||"Anonym";
+    const image=document.getElementById("missionImage").value||"https://i.imgur.com/default.png";
+    const msgDiv=document.getElementById("missionMessage");
+    const confirmDiv=document.getElementById("missionConfirm");
 
-function cancelMission() { document.getElementById("missionConfirm").innerText="❌ Versand abgebrochen"; }
+    if(!title||!desc){ msgDiv.style.color="#ff4c4c"; msgDiv.innerText="Bitte Titel und Beschreibung ausfüllen!"; confirmDiv.innerHTML=""; return; }
 
-async function sendMission() {
-  const msgDiv=document.getElementById("missionMessage");
-  const confirmDiv=document.getElementById("missionConfirm");
-  const title=document.getElementById("missionTitle").value;
-  const desc=document.getElementById("missionDesc").value;
-  const ic=document.getElementById("missionIC").value||"Anonym";
-  const imageURL=document.getElementById("missionImage").value||logoURL;
-  if(!title||!desc){msgDiv.style.color="#ff4c4c";msgDiv.innerText="Bitte Titel und Beschreibung ausfüllen!";confirmDiv.innerHTML="";return}
-  const embed={embeds:[{title,description:desc,color:0xf1c40f,footer:{text:`Von: ${ic}`,icon_url:logoURL},thumbnail:{url:imageURL}}]};
-  try{
-    const response=await fetch(DISCORD_WEBHOOK_MISSION,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(embed)});
-    if(!response.ok)throw new Error("Discord Fehler");
-    msgDiv.style.color="#00ff7f";msgDiv.innerText="✅ Mission erfolgreich gesendet!";
-  }catch(err){msgDiv.style.color="#ff4c4c";msgDiv.innerText="❌ Fehler beim Senden der Mission!";console.error(err)}
-  document.getElementById("missionTitle").value="";
-  document.getElementById("missionDesc").value="";
-  document.getElementById("missionIC").value="";
-  document.getElementById("missionImage").value="";
-  confirmDiv.innerHTML="";
+    const embed={ embeds:[{ title, description:desc, color:0xf1c40f, footer:{text:`Von: ${ic}`, icon_url:"logo.png"}, thumbnail:{url:image} }] };
+
+    try{
+        const res=await fetch("/send-mission",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(embed)});
+        if(!res.ok){ const t=await res.text(); console.error(t); msgDiv.style.color="#ff4c4c"; msgDiv.innerText="❌ Fehler beim Senden"; return; }
+        msgDiv.style.color="#00ff7f"; msgDiv.innerText="✅ Mission gesendet!";
+    }catch(err){ console.error(err); msgDiv.style.color="#ff4c4c"; msgDiv.innerText="❌ Fehler beim Senden"; }
+
+    document.getElementById("missionTitle").value=""; document.getElementById("missionDesc").value=""; document.getElementById("missionIC").value=""; document.getElementById("missionImage").value=""; confirmDiv.innerHTML="";
 }
 </script>
+
 </body>
 </html>
+
 
