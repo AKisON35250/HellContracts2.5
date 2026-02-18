@@ -82,56 +82,49 @@ const categoryColors = {
   "Ankauf": 0x9b59b6
 };
 
-function updateFields() {
-  const category = document.getElementById("marketCategory").value;
-  document.getElementById("verkaufFields").style.display = category==="Verkauf" ? "block" : "none";
-  document.getElementById("auftragFields").style.display = category==="Auftrag" ? "block" : "none";
-  document.getElementById("hilfeFields").style.display = category==="Hilfe" ? "block" : "none";
+function updateFields(){
+  const c = document.getElementById("marketCategory").value;
+  document.getElementById("verkaufFields").style.display = c==="Verkauf"?"block":"none";
+  document.getElementById("auftragFields").style.display = c==="Auftrag"?"block":"none";
+  document.getElementById("hilfeFields").style.display = c==="Hilfe"?"block":"none";
 }
 
-function confirmSend() {
-    document.getElementById("marketConfirm").innerHTML = `
-        ⚠️ Bist du sicher, dass du die Anzeige senden willst?<br>
-        <button onclick="sendMarket()">Ja, senden</button>
-        <button onclick="cancelSend()">Abbrechen</button>
-    `;
+function confirmSend(){
+  document.getElementById("marketConfirm").innerHTML=`⚠️ Sicher senden?<br><button onclick="sendMarket()">Ja</button> <button onclick="cancelSend()">Abbrechen</button>`;
 }
+function cancelSend(){ document.getElementById("marketConfirm").innerText="❌ Versand abgebrochen"; }
 
-function cancelSend() {
-    document.getElementById("marketConfirm").innerText = "❌ Versand abgebrochen";
-}
+async function sendMarket(){
+  const title=document.getElementById("marketTitle").value.trim();
+  const desc=document.getElementById("marketDesc").value.trim();
+  const category=document.getElementById("marketCategory").value;
+  const ic=document.getElementById("marketIC").value||"Anonym";
+  const image=document.getElementById("imageField").value||"https://i.imgur.com/default.png";
+  const msg=document.getElementById("marketMessage");
+  const confirmDiv=document.getElementById("marketConfirm");
 
-async function sendMarket() {
-    const title = document.getElementById("marketTitle").value.trim();
-    const desc = document.getElementById("marketDesc").value.trim();
-    const category = document.getElementById("marketCategory").value;
-    const ic = document.getElementById("marketIC").value || "Anonym";
-    const image = document.getElementById("imageField").value || "https://i.imgur.com/default.png";
-    const msgDiv = document.getElementById("marketMessage");
-    const confirmDiv = document.getElementById("marketConfirm");
+  if(!title||!desc){ msg.style.color="#ff4c4c"; msg.innerText="Titel und Beschreibung ausfüllen!"; confirmDiv.innerHTML=""; return; }
 
-    if(!title || !desc){ msgDiv.style.color="#ff4c4c"; msgDiv.innerText="Bitte Titel und Beschreibung ausfüllen!"; confirmDiv.innerHTML=""; return; }
+  let extra="";
+  if(category==="Verkauf") extra=`💰 Preis: ${document.getElementById("priceField").value||"N/A"}\n🛠 Zustand: ${document.getElementById("conditionField").value||"N/A"}\n📦 Menge: ${document.getElementById("amountField").value||"1"}`;
+  if(category==="Auftrag") extra=`📋 Auftragsdetails:\n${document.getElementById("auftragField").value||"Keine Details"}`;
+  if(category==="Hilfe") extra=`🆘 Hilfebedarf:\n${document.getElementById("hilfeField").value||"Keine Details"}`;
 
-    let extra = "";
-    if(category==="Verkauf") extra=`💰 Preis: ${document.getElementById("priceField").value||"Nicht angegeben"}\n🛠 Zustand: ${document.getElementById("conditionField").value||"Nicht angegeben"}\n📦 Menge: ${document.getElementById("amountField").value||"1"}`;
-    if(category==="Auftrag") extra=`📋 Auftragsdetails:\n${document.getElementById("auftragField").value||"Keine Details"}`;
-    if(category==="Hilfe") extra=`🆘 Hilfebedarf:\n${document.getElementById("hilfeField").value||"Keine Details"}`;
+  const embed={ embeds:[{ title, description:desc+"\n\n"+extra, color:categoryColors[category], footer:{text:`Kategorie: ${category} | Von: ${ic}`, icon_url:"logo.png"}, thumbnail:{url:image} }] };
 
-    const embed = { embeds:[{ title, description: desc+"\n\n"+extra, color: categoryColors[category], footer:{text:`Kategorie: ${category} | Von: ${ic}`, icon_url:"logo.png"}, thumbnail:{url:image} }] };
+  try{
+    const res=await fetch("/send-market",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(embed)});
+    if(!res.ok){ const t=await res.text(); console.error(t); msg.style.color="#ff4c4c"; msg.innerText="❌ Fehler beim Senden"; return; }
+    msg.style.color="#00ff7f"; msg.innerText="✅ Anzeige gesendet!";
+  }catch(err){ console.error(err); msg.style.color="#ff4c4c"; msg.innerText="❌ Fehler beim Senden"; }
 
-    try{
-        const res = await fetch("/send-market", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(embed) });
-        if(!res.ok){ const t=await res.text(); console.error(t); msgDiv.style.color="#ff4c4c"; msgDiv.innerText="❌ Fehler beim Senden"; return; }
-        msgDiv.style.color="#00ff7f"; msgDiv.innerText="✅ Anzeige gesendet!";
-    }catch(err){ console.error(err); msgDiv.style.color="#ff4c4c"; msgDiv.innerText="❌ Fehler beim Senden"; }
-
-    // Formular zurücksetzen
-    document.getElementById("marketTitle").value=""; document.getElementById("marketDesc").value=""; document.getElementById("marketIC").value="";
-    document.getElementById("priceField").value=""; document.getElementById("conditionField").value=""; document.getElementById("amountField").value="";
-    document.getElementById("auftragField").value=""; document.getElementById("hilfeField").value=""; document.getElementById("imageField").value="";
-    confirmDiv.innerHTML="";
+  // Reset
+  document.getElementById("marketTitle").value=""; document.getElementById("marketDesc").value=""; document.getElementById("marketIC").value="";
+  document.getElementById("priceField").value=""; document.getElementById("conditionField").value=""; document.getElementById("amountField").value="";
+  document.getElementById("auftragField").value=""; document.getElementById("hilfeField").value=""; document.getElementById("imageField").value="";
+  confirmDiv.innerHTML="";
 }
 </script>
-
 </body>
 </html>
+
